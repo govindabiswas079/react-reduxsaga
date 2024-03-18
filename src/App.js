@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTodosRequest, createTodoRequest } from './store/actions';
 
-function App() {
+const App = () => {
+  const dispatch = useDispatch();
+  const { todos, loading, error } = useSelector((state) => state.todos);
+
+  useEffect(() => {
+    dispatch(fetchTodosRequest({ currentPage: 1, pageSize: 30 }));
+  }, [dispatch]);
+
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createTodoRequest({ name: "payload" })); // Dispatch createTodoRequest action with todo data
+  };
+
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Todos</h1>
+      <ul>
+        {todos?.map((todo,) => (
+          <li key={todo._id}>{todo.name}</li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
 export default App;
